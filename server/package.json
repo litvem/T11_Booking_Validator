@@ -13,7 +13,8 @@
   "author": "Team-11",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "mqtt": "^4.3.7"
   }
 }
 
