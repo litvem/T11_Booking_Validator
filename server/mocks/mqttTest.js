@@ -46,6 +46,31 @@ switch (true) {
 */
 
 
+/**
+ * To test this part another mosquitto terminal needs to publish a message to the topic
+ * topic 1: "booking/confirmed/#"
+ * topic 2: "booking/request"
+*/
+
+
+mqtt.client.on("message", (topic, message) => {
+    const data = JSON.parse(message);
+    // changes the session number in the topic to #
+    if(topic.includes(topics.subsscribeTopic.bookingConfirmation.slice(0,-1))) topic = topics.subsscribeTopic.bookingConfirmation;
+    if(topic.includes(topics.subsscribeTopic.confirmationError.slice(0,-1))) topic = topics.subsscribeTopic.confirmationError;
+    
+    switch (true) {
+        case topic.includes(topics.subsscribeTopic.bookingRequest):
+            console.log("Booking request received: " + data);
+            break;
+            case topic.includes(topics.subsscribeTopic.bookingConfirmation.slice(0,-1)):
+            console.log("Booking request received: " + data);
+            console.log("Sending email...");
+            break; 
+    }
+}); 
+
+
 
 
 
