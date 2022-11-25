@@ -1,7 +1,6 @@
 const mqtt = require("mqtt");
-const dotenv = require("dotenv");
 const topics = require("./topics");
-dotenv.config();
+
 
 /* var LOCALHOST = "tcp://127.0.0.1:1883" */
 var LOCALHOST = "mqtt://localhost:1883"

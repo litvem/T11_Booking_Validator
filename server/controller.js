@@ -2,7 +2,7 @@ const mqtt = require("./mqtt");
 const topics = require("./topics");
 const {MinPriorityQueue}= require('@datastructures-js/priority-queue'); 
 
-const MAX_SIZE = 10; // just as an example for now
+const MAX_SIZE = 10; 
 mqtt.connect();
 
 let inssuancePQueue = new MinPriorityQueue((bookingRequest) => bookingRequest.timeStamp); 

@@ -15,33 +15,31 @@ var bookingResponse = {
     "requestid": 13,
     "time": "9:30"
 }
-
-mqtt.client.on("connect", () => {
-    console.log(`MQTT client connected`);
-    mqtt.subscribe(topics.subsscribeTopic.bookingRequest);
-    mqtt.subscribe(topics.subsscribeTopic.bookingConfirmation);
-
-}); 
+mqtt.connect();
+/**
+ * Expect: 
+    Succesful subscribtion to: booking/request
+    Succesful subscribtion to: booking/confirmed/#
+    Succesful subscribtion to: booking/error/#
+ */
 
 mqtt.client.publish(topics.publishTopic.saveBooking, JSON.stringify(bookingRequest),0)
-console.log("Publish: " + topics.publishTopic.saveBooking);
-mqtt.client.publish(topics.subsscribeTopic.bookingConfirmation, JSON.stringify(bookingResponse),0)
-console.log("Publish: " + topics.publishTopic.saveBooking);
 
+
+
+/** To test this part another mosquitto terminal needs to publish a message to the topic*/
 mqtt.client.on("message", (topic, message) => {
     const data = JSON.parse(message);
     switch (topic) {
-        case topics.subsscribeTopic.bookingRequest:
-            console.log(topics.subsscribeTopic.bookingRequest)
+        case topics.subsscribeTopic:
             console.log("Booking request received: " + data);
             break;
         case topics.subsscribeTopic.bookingConfirmation:
-            console.log(topics.subsscribeTopic.bookingConfirmation)
             console.log("Booking request received: " + data);
             console.log("Sending email...");
             break; 
     }
-});
+}); 
 
 
 
