@@ -27,7 +27,10 @@ mqtt.client.publish(topics.publishTopic.saveBooking, JSON.stringify(bookingReque
 
 
 
-/** To test this part another mosquitto terminal needs to publish a message to the topic*/
+/** To test this part another mosquitto terminal needs to publish a message to the topic
+ * topic 1: "booking/confirmed/#"
+ * topic 2: "booking/request"
+*/
 mqtt.client.on("message", (topic, message) => {
     const data = JSON.parse(message);
     switch (topic) {
