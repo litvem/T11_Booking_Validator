@@ -2,6 +2,10 @@
 node_modules/
 backups/
 
+# dotenv environment variables file
+.env
+.env.test
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
