@@ -1,7 +1,6 @@
 const mqtt = require("mqtt");
 const topics = require("./topics");
 
-
 /* var LOCALHOST = "tcp://127.0.0.1:1883" */
 var LOCALHOST = "mqtt://localhost:1883"
 client = mqtt.connect(LOCALHOST)

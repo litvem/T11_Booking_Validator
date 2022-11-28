@@ -3,7 +3,7 @@
  * makes sure that it subscribes to the topic and send one publish topic to mosquitto. 
  * It also have a basic test for the controllers switch case that handles the 
  * subscribe topics.
- */
+*/
 
 const topics = require("../topics");
 const mqtt = require("../mqtt");
@@ -64,6 +64,7 @@ mqtt.client.on("message", (topic, message) => {
             break; 
     }
 });
+
 
 
 

@@ -34,6 +34,7 @@ The component **<ins>input data</ins>** are both booking request and booking rep
 {
   "userid": 12345,
   "requestid": 13,
+  "date": "2020-12-14",
   "time": "9:30" # alt "none" if failed,
   "name": "Peter",
   "email": "example@mail.com"
@@ -48,12 +49,23 @@ The component **<ins>input data</ins>** are both booking request and booking rep
 
 >Javascript IDE<br> *Some alternatives:* [Visual Studio Code](https://visualstudio.microsoft.com/downloads/) , [WebStorm](https://www.jetbrains.com/webstorm/download/)
 
+
 For MacOS:
 > HomeBreq<br> [Download](https://brew.sh/index_sv)
+
+### Libraries
+* [ NPM ](https://www.npmjs.com/)
+* [ MQTT.js ](https://www.npmjs.com/package/mqtt)
+* [ Opossum ](https://nodeshift.dev/opossum/)
+* [ Nodemailer ](https://nodemailer.com/about/)
+* [ Min-priority queue library](https://www.npmjs.com/package/@datastructures-js/priority-queue)
+
+
 ### **<ins>Instructions</ins>**
 
 | Description | Command |
 |-------|---|
+| Go to mosquitto root folder and open ***mosquitto.conf***| Add the following:<br> `listener 1883 `<br>  `protocol mqtt `<br> `listener 9001 `<br> `protocol websockets  `<br> ` allow_anonymous true`|
 | Clone this repository | <ins>Option 1.</ins><br> Download as a zip file<br> <ins>Option 2.</ins><br>`git clone git@git.chalmers.se:courses/dit355/dit356-2022/t-11/t11-booking-validator.git`|
 | Open terminal and navigate to mosquitto root folder | Windows: `mosquitto -c mosquitto.conf -v `<br> MacOS: `brew services start mosquitto` |
 |Open the repo in javascript IDE and open the terminal in the IDE. Navigate to the server folder | `npm install` |
