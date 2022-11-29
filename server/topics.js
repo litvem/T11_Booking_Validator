@@ -2,7 +2,9 @@
 const publishTopic = {
     saveBooking: "booking/save",
     cbOpen: "circuitbreak/open",
-    cbClose: "circuitbreak/close"
+    cbClose: "circuitbreak/close",
+    formatEroor:"booking/error/formatError",
+    bookingError: "booking/error"
 }
 exports.publishTopic = publishTopic;
 

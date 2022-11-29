@@ -1,8 +1,6 @@
 const mqtt = require("mqtt");
 const topics = require("./topics");
 
-
-/* var LOCALHOST = "tcp://127.0.0.1:1883" */
 var LOCALHOST = "mqtt://localhost:1883"
 client = mqtt.connect(LOCALHOST)
 exports.client =client;
@@ -13,6 +11,18 @@ exports.client =client;
 function subscribeToAll (){
     Object.values(topics.subsscribeTopic).forEach(topic => {
         client.subscribe(topic, function (err) {
+            if (!err) {
+                console.log("Succesful subscribtion to: " + topic)
+            }else{
+                console.log(err.message)
+            }
+        }) 
+    });
+}
+
+function unsubscribeToAll(){
+    Object.values(topics.subsscribeTopic).forEach(topic => {
+        client.unsubscribe(topic, function (err) {
             if (!err) {
                 console.log("Succesful subscribtion to: " + topic)
             }else{
@@ -39,6 +49,7 @@ exports.connect = function(){
     /** function called when client is disconnected */
     client.on('disconnect', function () {
         console.log('Status: Disconnected from Mqtt broker')
+        client.unsubscribeToAll();
         client.reconnect();
     })
 
@@ -50,7 +61,12 @@ exports.connect = function(){
     /** function called  when client is offline */ 
     client.on('offline', function () {
         console.log('Status: Offline, Disconnected from Mqtt broker')
+        client.unsubscribeToAll();
         client.reconnect();
+    })
+    client.on("close", function(){
+        console.log("Close")
+        client.unsubscribeToAll();
     })
 }
 
