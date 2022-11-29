@@ -1,23 +1,24 @@
 const nodemialer = require('nodemailer');
+require('dotenv').config()
 
 // Nodemailer function for sending email
 exports.sendEmail = function (bookingRequest) {
   
     nodemailer.createTestAccount((err) => {
       if (err) return err;
-      // Login to email
+      // Login to the dentistimo email
       let transporter = nodemailer.createTransport(
       {
-        service: "hotmail",
+        service: process.env.SERVICE,
         auth:{
-            user:"dentistimo-team11@outlook.com",
-            pass:"dsTeam11"
+            user:process.env.EMAIL,
+            pass:process.env.PASSWORD
         }
       }
     );
       // Create email content
       let emailContent = {
-        from: "dentistimo-team11@outlook.com",
+        from: process.env.EMAIL,
         to: bookingRequest.email,
         subject: "Appointment confirmation",
         html: `                
@@ -32,7 +33,7 @@ exports.sendEmail = function (bookingRequest) {
          if(err){
             console.log("has error", err)
         }else{
-            console.log("email has been send")
+            console.log("Email has been send")
         }
       });
     });

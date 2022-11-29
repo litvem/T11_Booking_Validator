@@ -9,46 +9,22 @@ const topics = require("../topics");
 const mqtt = require("../mqtt");
 
 var bookingRequest = {
-    source:"client1",
     "userid": 12345,
     "requestid": 13,
     "dentistid": 1,
-    "issuance": 1602406766314,
-    "date": "2020-12-14"
+    "issuance": 1,
+    "date": "2020-12-14",
 }
 
 mqtt.connect(); 
-/** Expected output:
- *  ----------------
- * Succesful subscribtion to: booking/request
- * Succesful subscribtion to: booking/confirmed/#
- * Succesful subscribtion to: booking/error/#
-*/
-
-// Look at mosquitto terminal if published
+// Look at mosquitto terminal if topic has been published
 mqtt.client.publish(topics.publishTopic.saveBooking, JSON.stringify(bookingRequest),0)
 
 
-var topic = "booking/confirmed/123"
-switch (true) {
-    case topic.includes(topics.subsscribeTopic.bookingRequest):
-        console.log("Booking request received: " );
-        break;
-    case topic.includes(topics.subsscribeTopic.bookingConfirmation.slice(0,-1)):
-        console.log("Booking request received: " );
-        console.log("Sending email...");
-        break; 
-}
-/** Expected output (often printed first):
- *  --------------------------------------
- * Booking request received: 
- * Sending email...
-*/
-
-
 /**
+ * ** Topic received from broker**
  * To test this part another mosquitto terminal needs to publish a message to the topic
- * topic 1: "booking/confirmed/#"
+ * topic 1: "booking/confirmed/<some random number>"
  * topic 2: "booking/request"
 */
 
@@ -65,7 +41,19 @@ mqtt.client.on("message", (topic, message) => {
     }
 });
 
-
+/** Expected output (often printed first):
+ *  --------------------------------------
+ * Succesful subscribtion to: booking/request
+ * Succesful subscribtion to: booking/confirmed/#
+ * Succesful subscribtion to: booking/error/#
+ * 
+ * if topic 1: 
+ * Booking request received: " + <sended message>
+ * 
+ * if topic 2: 
+ * Booking request received: + <sended message>
+ * Sending email...
+*/
 
 
 

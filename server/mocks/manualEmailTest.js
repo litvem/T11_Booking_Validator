@@ -8,12 +8,13 @@
  * The email often comes as a spam so look for it there. 
  * */
 const nodemailer = require("nodemailer"); 
+require('dotenv').config({path: "../.env" })
 
 var myEmail = "<Add an email here>"
 
 var bookingRequest = {
-    email: myEmail,
-    name: "Nicole",
+    email: process.env.MY_EMAIL || myEmail,
+    name: "Peter",
     date: "2022-12-01",
     time: "09:00-09:30"
 }
@@ -26,16 +27,16 @@ function sendMail(bookingRequest) {
       // Login to email
       let transporter = nodemailer.createTransport(
       {
-        service: "hotmail",
+        service: process.env.SERVICE,
         auth:{
-            user:"dentistimo-team11@outlook.com",
-            pass:"dsTeam11"
+            user:process.env.EMAIL,
+            pass:process.env.PASSWORD
         }
       }
     );
       // Create email content
       let emailContent = {
-        from: "dentistimo-team11@outlook.com",
+        from: process.env.EMAIL,
         to: bookingRequest.email,
         subject: "Appointment confirmation",
         html: `
