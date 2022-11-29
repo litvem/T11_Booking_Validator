@@ -65,7 +65,6 @@ For MacOS:
 
 | Description | Command |
 |-------|---|
-| Go to mosquitto root folder and open ***mosquitto.conf***| Add the following:<br> `listener 1883 `<br>  `protocol mqtt `<br> `listener 9001 `<br> `protocol websockets  `<br> ` allow_anonymous true`|
 | Clone this repository | <ins>Option 1.</ins><br> Download as a zip file<br> <ins>Option 2.</ins><br>`git clone git@git.chalmers.se:courses/dit355/dit356-2022/t-11/t11-booking-validator.git`|
 | Open terminal and navigate to mosquitto root folder | Windows: `mosquitto -c mosquitto.conf -v `<br> MacOS: `brew services start mosquitto` |
 |Open the repo in javascript IDE and open the terminal in the IDE. Navigate to the server folder | `npm install` |
