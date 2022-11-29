@@ -70,6 +70,7 @@ For MacOS:
 | Open terminal and navigate to mosquitto root folder | Windows: `mosquitto -c mosquitto.conf -v `<br> MacOS: `brew services start mosquitto` |
 |Open the repo in javascript IDE and open the terminal in the IDE. Navigate to the server folder | `npm install` |
 |Create a file *.env* in the **server folder** and add the following variables<br><br> |`MY_EMAIL="<your email>"` <br>`SERVICE="hotmail" `<br> **Note :** gmail can have issues, so use hotmail which is the service of hotmail or outlook emails.)<br>`EMAIL="<email of the service>"`<br>`PASSWORD="<password>"`|
+|For the automated test| run: `npm test`|
 <br>
 
 ## **Common errors**
