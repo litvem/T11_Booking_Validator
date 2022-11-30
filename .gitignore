@@ -1,6 +1,7 @@
 # Dependency directories
 node_modules/
 backups/
+coverage/
 
 # dotenv environment variables file
 .env

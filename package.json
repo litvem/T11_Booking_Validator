@@ -4,7 +4,7 @@
   "description": "server component",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest  --coverage"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,8 @@
     "@datastructures-js/priority-queue": "^6.1.4",
     "dotenv": "^16.0.3",
     "mqtt": "^4.3.7",
-    "nodemailer": "^6.8.0"
+    "nodemailer": "^6.8.0",
+    "opossum": "^7.0.1"
   },
   "devDependencies": {
     "jest": "^29.3.1"

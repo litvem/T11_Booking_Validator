@@ -10,7 +10,7 @@ exports.client =client;
  */
 function subscribeToAll (){
     Object.values(topics.subsscribeTopic).forEach(topic => {
-        client.subscribe(topic, function (err) {
+        client.subscribe(topic,{ qos: 2 }, function (err) {
             if (!err) {
                 console.log("Succesful subscribtion to: " + topic)
             }else{
@@ -71,12 +71,12 @@ exports.connect = function(){
 }
 
 /**
- * Function that publish a message to the broker, uses QoS 1
+ * Function that publish a message to the broker, uses QoS 2
  * @param {String} topic 
  * @param {String} message 
  */
 exports.publish = function (topic, message){
-    client.publish(topic, message, 1)
+    client.publish(topic, message, 2)
 }
 
 /**

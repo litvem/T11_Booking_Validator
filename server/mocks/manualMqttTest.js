@@ -29,13 +29,13 @@ mqtt.client.publish(topics.publishTopic.saveBooking, JSON.stringify(bookingReque
 */
 
 mqtt.client.on("message", (topic, message) => {
-    const data = JSON.parse(message);
     switch (true) {
         case topic.includes(topics.subsscribeTopic.bookingRequest):
-            console.log("Booking request received: " + data);
+            console.log("Booking request received: " + message);
             break;
             case topic.includes(topics.subsscribeTopic.bookingConfirmation.slice(0,-1)):
-            console.log("Booking request received: " + data);
+            
+            console.log("Booking request received: " + message);
             console.log("Sending email...");
             break; 
     }
