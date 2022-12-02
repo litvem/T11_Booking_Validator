@@ -1,0 +1,9 @@
+Author:Felipe Marques
+Source:https://webera.blog/como-implementar-o-pattern-circuit-breaker-no-node-js-965b2fb39ee6
+
+Description: The code from the blog is TypeScript so I have refactored it to Javascript
+
+have done this tho: 
+
+Obs: Execute the command below inside the src folder.
+mkdir circuit-breaker
