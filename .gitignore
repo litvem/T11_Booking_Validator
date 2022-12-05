@@ -1,6 +1,8 @@
 # Test folders
 backups/
 coverage/
+testing/
+Play/
 
 ### Linux ###
 *~

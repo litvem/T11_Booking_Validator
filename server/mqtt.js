@@ -8,7 +8,7 @@ exports.client =client;
 /**
  * Function that subscribes to all topics.
  */
-function subscribeToAll (){
+function subscribeToAll(){
     Object.values(topics.subsscribeTopic).forEach(topic => {
         client.subscribe(topic,{ qos: 2 }, function (err) {
             if (!err) {
@@ -19,18 +19,20 @@ function subscribeToAll (){
         }) 
     });
 }
+exports.subscribeToAll = subscribeToAll
 
 function unsubscribeToAll(){
     Object.values(topics.subsscribeTopic).forEach(topic => {
         client.unsubscribe(topic, function (err) {
             if (!err) {
-                console.log("Succesful subscribtion to: " + topic)
+                console.log("Succesful unsubscribe to: " + topic)
             }else{
                 console.log(err.message)
             }
         }) 
     });
 }
+exports.unsubscribeToAll = unsubscribeToAll
 
 /**
  * Function that connects to the mosquitto broker
@@ -49,7 +51,7 @@ exports.connect = function(){
     /** function called when client is disconnected */
     client.on('disconnect', function () {
         console.log('Status: Disconnected from Mqtt broker')
-        client.unsubscribeToAll();
+        unsubscribeToAll()
         client.reconnect();
     })
 
@@ -61,12 +63,12 @@ exports.connect = function(){
     /** function called  when client is offline */ 
     client.on('offline', function () {
         console.log('Status: Offline, Disconnected from Mqtt broker')
-        client.unsubscribeToAll();
+        unsubscribeToAll();
         client.reconnect();
     })
     client.on("close", function(){
         console.log("Close")
-        client.unsubscribeToAll();
+        unsubscribeToAll();
     })
 }
 
@@ -78,13 +80,31 @@ exports.connect = function(){
 exports.publish = function (topic, message){
     client.publish(topic, message, 2)
 }
+/**
+ * Function that publish a message to the broker, uses QoS 1
+ * @param {String} topic 
+ * @param {String} message 
+ */
+exports.publishBreaker = function (topic, message){
+    client.publish(topic, message, 1)
+}
+
+exports.unsubscribe= (topic) => {
+    client.unsubscribe(topic, function (err) {
+        if (!err) {
+            console.log("Succesful unsubscribe to: " + topic)
+        }else{
+            console.log(err.message)
+        }
+      }); 
+}
 
 /**
  * Function that subscribes to a specific topic.
  * @param {String} topic 
  */
 exports.subscribe = function (topic){
-    client.subscribe(topic, function (err) {
+    client.subscribe(topic,{ qos: 2 } ,function (err) {
         if (!err) {
             console.log("Succesful subscribtion to: " + topic)
         }else{

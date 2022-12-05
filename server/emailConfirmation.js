@@ -31,9 +31,9 @@ exports.sendEmail = function (bookingRequest) {
       // Send email confirmation
       transporter.sendMail(emailContent, (err) => {
          if(err){
-            console.log("has error", err)
+            throw "err: " + err;
         }else{
-            console.log("Email has been send")
+            return"Email has been send"
         }
       });
     });
