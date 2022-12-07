@@ -1,5 +1,6 @@
 /**
- * Test the different components of the controller 
+ * Test for the behaviour of the main components of the booking validator.
+ * This was created as a proof of concept.
  * For more assertions: https://jestjs.io/docs/expect#tomatchobjectobject
  */
 

@@ -8,7 +8,8 @@ const publishTopic = Object.freeze({
     cbClose: "circuitbreak/close",
     formatError:"booking/error/formatError/",
     bookingError: "booking/error/",
-    emailError:"booking/error/emailconfirmation"
+    emailError:"booking/error/emailconfirmation",
+    emailConfirmation: "booking/error/emailconfirmation"
 });
 
 exports.publishTopic = publishTopic;
