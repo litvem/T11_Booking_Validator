@@ -14,8 +14,8 @@ This components is triggered by incomming booking request send from users using 
 
 ### **<ins>Fault Tolerance and overload</ins>**
 The components implements a min heap priority queue for the booking request, decreasing the overload of the system, combined with a circuit breaker which is triggered when the queue is at maximun capacity. 
-When there is a high load in the components and the failure rate is at 50% the circuit breaker enters an open state during 30 seconds. After the timeout the components enter into an half-open state, meaning that if the next request is succesful the circuit breaker is closed and the component is fully available again.
-More theoretical information can be found [here](https://martinfowler.com/bliki/CircuitBreaker.html)
+When there is a high load in the components and the failure rate is at 10% the circuit breaker enters an open state during 30 seconds. The circuit breaker half-open state has been modified in this component. Instead of verifying that the next request is succesful the half-open state checks if the min heap priority queue is at specified threhold capacity level. If the queue size is above the specified threhold capacity the breaker enter the open state again and if the queue size is under the specified threhold capacity the breaker enter to a close state instead. 
+More theoretical information about the circuit breaker pattern is found [here](https://martinfowler.com/bliki/CircuitBreaker.html).
 
 ## **Data flow**
 
@@ -29,8 +29,9 @@ The component **<ins>input data</ins>** are both booking request and booking rep
   "dentistid": 1,
   "issuance": 1602406766314,
   "date": "2020-12-14",
+  "time": "9:30-10:00",
   "name": "Peter",
-  "sessionid":"asd12%asd"
+  "sessionid":"5355QPITzxL9-tGW1yOUMITYwIYk4Vdz"
 }
 ```
 
@@ -40,9 +41,9 @@ The component **<ins>input data</ins>** are both booking request and booking rep
   "userid": "example@mail.com",
   "requestid": 13,
   "date": "2020-12-14",
-  "time": "9:30" # alt "none" if failed,
+  "time": "9:30-10:00",
   "name": "Peter",
-  "sessionid": "asd12%asd"
+  "sessionid": "5355QPITzxL9-tGW1yOUMITYwIYk4Vdz"
 }
 ```
 

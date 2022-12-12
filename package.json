@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "test": "jest  --coverage",
-    "cb": "nodemon ./server/mocks/cbreaker.js",
     "controller": "nodemon ./server/controller.js"
   },
   "repository": {

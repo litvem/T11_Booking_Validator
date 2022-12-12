@@ -3,20 +3,19 @@
  */
 
 const publishTopic = Object.freeze({
-    saveBooking: "booking/save",
-    cbOpen: "circuitbreak/open",
-    cbClose: "circuitbreak/close",
-    formatError:"booking/error/formatError/",
-    bookingError: "booking/error/",
-    emailError:"booking/error/emailconfirmation",
-    emailConfirmation: "booking/error/emailconfirmation"
+    saveBooking: "booking/save", // QoS 2 DB 
+    cbOpen: "circuitbreak/open", // QoS 1 
+    cbClose: "circuitbreak/close", // QoS 1 
+    bookingError: "booking/error/", // + session ID  QoS 2 
+    emailError:"emailconfirmation/error/", //  + session ID QoS 2
+    emailConfirmation: "emailconfirmation/" //  + session ID QoS 2
 });
 
 exports.publishTopic = publishTopic;
 
 const subsscribeTopic = Object.freeze({
-    bookingRequest: "booking/request",
-    bookingConfirmation: "booking/confirmed/#",
-    confirmationError: "booking/error/#"
+    bookingRequest: "booking/request", // QoS 2
+    bookingConfirmation: "booking/confirmed/#", // QoS 2
+    confirmationError: "booking/error/#" // QoS 2
 });
 exports.subsscribeTopic = subsscribeTopic;

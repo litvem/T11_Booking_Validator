@@ -61,7 +61,7 @@ function mockSwitch(topic){
 };
  
 test('Testing confimartion response', () => {
-    var topic = "booking/confirmed/123"
+    var topic = "booking/confirmed/sessisonToken"
     expect(mockSwitch(topic)).toBe("Booking confirmation received. Sending email...");
 });
 

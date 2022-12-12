@@ -77,7 +77,7 @@ exports.connect = function(){
  * @param {String} topic 
  * @param {String} message 
  */
-exports.publish = function (topic, message){
+exports.publishQoS2 = function (topic, message){
     client.publish(topic, message, 2)
 }
 /**
@@ -85,7 +85,7 @@ exports.publish = function (topic, message){
  * @param {String} topic 
  * @param {String} message 
  */
-exports.publishBreaker = function (topic, message){
+exports.publishQoS1 = function (topic, message){
     client.publish(topic, message, 1)
 }
 
