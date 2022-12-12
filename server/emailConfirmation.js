@@ -1,10 +1,11 @@
-const nodemialer = require('nodemailer');
+const nodemailer = require('nodemailer');
+const { send } = require('process');
 require('dotenv').config()
 
 // Nodemailer function for sending email
-exports.sendEmail = function (bookingRequest) {
+exports.sendEmail = async function (bookingRequest) {
   
-    nodemailer.createTestAccount((err) => {
+  nodemailer.createTestAccount((err) => {
       if (err) return err;
       // Login to the dentistimo email
       let transporter = nodemailer.createTransport(
@@ -16,25 +17,25 @@ exports.sendEmail = function (bookingRequest) {
         }
       }
     );
-      // Create email content
-      let emailContent = {
-        from: process.env.EMAIL,
-        to: bookingRequest.email,
-        subject: "Appointment confirmation",
-        html: `                
-          <h3>Hello ${bookingRequest.name}!</h3>
-          <h4>Here is your booking information: </h4>
-            <p>Date: ${bookingRequest.date}</p>
-            <p>Time: ${bookingRequest.time}</p> `,
-      };
+    // Create email content
+    let emailContent = {
+      from: process.env.EMAIL,
+      to: bookingRequest.email,
+      subject: "Appointment confirmation",
+      html: `                
+        <h3>Hello ${bookingRequest.name}!</h3>
+        <h4>Here is your booking information: </h4>
+          <p>Date: ${bookingRequest.date}</p>
+          <p>Time: ${bookingRequest.time}</p> `,
+    };
   
-      // Send email confirmation
-      transporter.sendMail(emailContent, (err) => {
-         if(err){
-            console.log("has error", err)
-        }else{
-            console.log("Email has been send")
-        }
-      });
+    // Send email confirmation
+    transporter.sendMail(emailContent, (err) => {
+        if(err){
+        transporter.close();
+        return err
+      }
     });
+  });
 };
+

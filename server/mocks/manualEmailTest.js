@@ -22,12 +22,13 @@ var bookingRequest = {
 // Nodemailer function for sending email
 function sendMail(bookingRequest) {
   
-    nodemailer.createTestAccount((err) => {
+  nodemailer.createTestAccount((err) => {
       if (err) return err;
+
       // Login to email
       let transporter = nodemailer.createTransport(
       {
-        service: process.env.SERVICE,
+        service:process.env.SERVICE,
         auth:{
             user:process.env.EMAIL,
             pass:process.env.PASSWORD
@@ -46,16 +47,13 @@ function sendMail(bookingRequest) {
                     <p>Time: ${bookingRequest.time}</p>   
                     `,
       };
-  
+
       // Send email confirmation
       transporter.sendMail(emailContent, (err) => {
-         if(err){
-            console.log("has error", err)
-        }else{
-            console.log("email has been send")
-        }
-      });
-    });
+        if(err){
+         transporter.close();
+         return err
+       }
+     });
+   });
 };
-
-sendMail(bookingRequest);
