@@ -12,7 +12,7 @@ require('dotenv').config({path: "../.env" })
 
 var myEmail = "<Add an email here>"
 
-var bookingRequest = {
+var mockBookingRequest = {
     email: process.env.MY_EMAIL || myEmail,
     name: "Peter",
     date: "2022-12-01",
@@ -28,10 +28,10 @@ function sendMail(bookingRequest) {
       // Login to email
       let transporter = nodemailer.createTransport(
       {
-        service:process.env.SERVICE,
+        service: process.env.SERVICE,
         auth:{
-            user:process.env.EMAIL,
-            pass:process.env.PASSWORD
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
         }
       }
     );
@@ -51,9 +51,12 @@ function sendMail(bookingRequest) {
       // Send email confirmation
       transporter.sendMail(emailContent, (err) => {
         if(err){
-         transporter.close();
-         return err
-       }
+          console.log("has error", err)
+      }else{
+          console.log("Email has been send")
+      }
+
      });
    });
 };
+sendMail(mockBookingRequest);
