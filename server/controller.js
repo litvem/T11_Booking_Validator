@@ -1,7 +1,3 @@
-/**
- * 
- */
-
 const CircuitBreaker = require('opossum');
 const mqtt = require("./mqtt");
 const topics = require("./topics");
@@ -17,6 +13,7 @@ const THRESHOLD_MAXS_SIZE = 3;
 const fallbackMessage = "Out of Service"
 const overload = "The Booking queue is overloaded"
 var state;
+var waitingForConfirmation = false;
 
 mqtt.connect();
 
@@ -118,15 +115,17 @@ mqtt.client.on("message", async (topic, message) => {
         console.log("listener on halfOpen: " + breaker.listenerCount('halfOpen')) */
       }).catch();
 
+      if(!waitingForConfirmation){
+        sendNextRequest();
+      }
       break; 
     case topic.includes(topics.subsscribeTopic.bookingConfirmation.slice(0,-1)):
-      console.log("SWITCH TRIGGERED")
       receiveConfimation(payload);
       break; 
     case topic.includes(topics.subsscribeTopic.confirmationError.slice(0,-1)):
       sendNextRequest();
       break; 
-  }rmSync
+  }
 });
 
 function sendNextRequest (){
@@ -134,7 +133,9 @@ function sendNextRequest (){
     const nextRequest = JSON.stringify(issuancePQueue.dequeue());
     mqtt.publishQoS2(topics.publishTopic.saveBooking, nextRequest);
     console.log("Sending next booking Request")
+    waitingForConfirmation = true;
   }else{
+    waitingForConfirmation = false;
     console.log("Queue is empty")
   }
 };

@@ -35,6 +35,7 @@ exports.sendEmail = async function (bookingRequest) {
         transporter.close();
         return err
       }
+
     });
   });
 };
