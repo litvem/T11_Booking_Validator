@@ -7,13 +7,14 @@ exports.sendEmail = async function (bookingRequest) {
   
   nodemailer.createTestAccount((err) => {
       if (err) return err;
-      // Login to the dentistimo email
+
+      // Login to email
       let transporter = nodemailer.createTransport(
       {
         service: process.env.SERVICE,
         auth:{
-            user:process.env.EMAIL,
-            pass:process.env.PASSWORD
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
         }
       }
     );
@@ -31,11 +32,12 @@ exports.sendEmail = async function (bookingRequest) {
   
     // Send email confirmation
     transporter.sendMail(emailContent, (err) => {
-        if(err){
-        transporter.close();
+      if(err){
+        console.log("has error", err)
         return err
+      }else{
+          console.log("Email has been send")
       }
-
     });
   });
 };

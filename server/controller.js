@@ -3,8 +3,6 @@ const mqtt = require("./mqtt");
 const topics = require("./topics");
 const { MinPriorityQueue }= require('@datastructures-js/priority-queue');
 const { sendEmail } = require('./emailConfirmation');
-const { rmSync } = require('fs');
-const { count } = require('console');
 //To increase the number of default (10) listener for Node uncomment this and give it a number
 //require('events').EventEmitter.defaultMaxListeners = <number of listeners wanted>;
 
@@ -23,7 +21,7 @@ exports.issuancePQueue= issuancePQueue;
 const bookingRequestOption = {
   timeout: 5000, // If our function takes longer than 5 seconds, trigger a failure
   errorThresholdPercentage: 10, // When 10% of requests fail, trigger the circuit breaker
-  resetTimeout: 30000 // After 30 seconds, try again.
+  resetTimeout: 3000 // After 30 seconds, try again.
 };
 
 async function receiveBookingRequest (payload){
@@ -133,30 +131,33 @@ function sendNextRequest (){
     const nextRequest = JSON.stringify(issuancePQueue.dequeue());
     mqtt.publishQoS2(topics.publishTopic.saveBooking, nextRequest);
     console.log("Sending next booking Request")
+    console.log("Queue sizes : " + issuancePQueue.size())
     waitingForConfirmation = true;
   }else{
     waitingForConfirmation = false;
     console.log("Queue is empty")
+    console.log("Queue sizes : " + issuancePQueue.size())
   }
 };
 
 async function receiveConfimation (payload){
-  if(JSON.stringify(payload.userid).includes("@")){
+  /** if the userId aka the email conteains @test we are not 
+   * loading the 
+   */
+  if(!JSON.stringify(payload.userid).includes("@test")){
       const err = await sendEmail(payload);
-      console.log("sendEmail response: " + err)
       if(err){
-        console.log(err);
-        mqtt.publishQoS2( JSON.stringify(topics.publishTopic.emailConfirmation + payload.sessionid), "Email couldn't be delivered");
+        console.log("Email couldn't be delivered")
+        mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionid, "Email couldn't be send");
         sendNextRequest();
       }else{
-        console.log("Email was sended")
-        mqtt.publishQoS2(JSON.stringify(topics.publishTopic.emailConfirmation + payload.sessionid) , JSON.stringify(payload));
+        console.log("Email was send")
+        mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionid , JSON.stringify(payload));
         sendNextRequest();
       }
   }else{
-    console.log("Request confermed but No email Provided...");
-    mqtt.publishQoS2(JSON.stringify(topics.publishTopic.emailConfirmation + payload.sessionid) ,"No email provided");
+    console.log("Request confermed but no real email provided...");
+    mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionid ,"No email provided");
     sendNextRequest();
   } 
 };
-

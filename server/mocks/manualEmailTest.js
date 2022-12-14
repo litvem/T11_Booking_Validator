@@ -2,7 +2,7 @@
  * This file test the email confirmation functionality.
  * It was creating as a prove of concept.
  * 
- * Source: https://github.com/nodemailer/nodemailer
+ * Source: https://www.w3schools.com/nodejs/nodejs_email.asp
  * 
  * Insert and email in the variable myEmail and run the file.
  * The email often comes as a spam so look for it there. 
@@ -20,7 +20,7 @@ var mockBookingRequest = {
 }
 
 // Nodemailer function for sending email
-function sendMail(bookingRequest) {
+async function sendMail(bookingRequest) {
   
   nodemailer.createTestAccount((err) => {
       if (err) return err;
@@ -59,4 +59,5 @@ function sendMail(bookingRequest) {
      });
    });
 };
-sendMail(mockBookingRequest);
+
+sendMail(bookingRequest);
