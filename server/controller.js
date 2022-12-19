@@ -6,6 +6,10 @@ const { sendEmail } = require('./emailConfirmation');
 //To increase the number of default (10) listener for Node uncomment this and give it a number
 //require('events').EventEmitter.defaultMaxListeners = <number of listeners wanted>;
 
+/**
+ * The MAX_SIZE, THRESHOLD_MAXS_SIZE and bookingRequestOption are set up 
+ * with values to make the presentation as easy as possible.
+ */
 const MAX_SIZE = 5;
 const THRESHOLD_MAXS_SIZE = 3; 
 const fallbackMessage = "Out of Service"
@@ -20,8 +24,8 @@ exports.issuancePQueue= issuancePQueue;
 
 const bookingRequestOption = {
   timeout: 5000, // If our function takes longer than 5 seconds, trigger a failure
-  errorThresholdPercentage: 10, // When 10% of requests fail, trigger the circuit breaker
-  resetTimeout: 3000 // After 30 seconds, try again.
+  errorThresholdPercentage: 1, // When 1% of requests fail, trigger the circuit breaker. 
+  resetTimeout: 4000 // After 4 seconds, try again. 
 };
 
 async function receiveBookingRequest (payload){
