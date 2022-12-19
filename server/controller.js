@@ -52,14 +52,13 @@ function onOpen (){
   mqtt.unsubscribe(topics.subsscribeTopic.bookingRequest);
   }
 };
+
 /**
- * The half-open state has been modified to optimaze the circuit breaker with the load balancer 
- * and the web application. Since the booking validator is connected to the web application, 
- * it is impossible to know how many booking request will be sended to the booking validator.
- * Therefore instead of waiting for success request, during the half-open state the breaker will
- * check if the queue is at specified threhold capacity. If the queue size is bigger than 
- * the specified threhold the breaker enter the open state and if the queue size is under the 
- * threhold the breaker will close instead. 
+ * The half-open state of the circuit breaker has been modified 
+ * so that a load balancer capacity check is executed. 
+ * If the load balancer capicity is under a specified threshold capacity
+ * the circuit breaker enters  the close state, but if the load balancer
+ * capicity is above the threshold capacity the circuit breaker reenters the open state again.
  */
 function onHalfOpen() {
   console.log("Circuit breaker status: Half-Open")
@@ -80,7 +79,10 @@ function onClose(){
     console.log("Circuit breaker status: closed")
   }
 };
-
+/**
+ * If a request triggers the fallback, the components 
+ * publishes that the circuit breaker is open. 
+ */
 function fallback(){
   circuits.bookingRequestBreaker.fallback(() => { 
     console.log("Fallback: " + fallbackMessage)
@@ -90,7 +92,7 @@ function fallback(){
 
 
 mqtt.client.on("message", async (topic, message) => {
-  var payload = JSON.parse(message);
+  const payload = JSON.parse(message);
   switch (true) {
     case topic.includes(topics.subsscribeTopic.bookingRequest):
       if(circuits.bookingRequestBreaker.close){
@@ -141,23 +143,24 @@ function sendNextRequest (){
 };
 
 async function receiveConfimation (payload){
-  /** if the userId aka the email conteains @test we are not 
-   * loading the 
-   */
   if(!JSON.stringify(payload.userid).includes("@test")){
-      const err = await sendEmail(payload);
-      if(err){
-        console.log("Email couldn't be delivered")
-        mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionid, "Email couldn't be send");
-        sendNextRequest();
-      }else{
+
+      await sendEmail(payload).then(()=> {
         console.log("Email was send")
-        mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionid , JSON.stringify(payload));
+        mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionId , JSON.stringify(payload));
         sendNextRequest();
-      }
+      }).catch((err)=>{
+        console.log(err);
+        console.log("Email couldn't be delivered")
+        mqtt.publishQoS2(topics.publishTopic.emailError + payload.sessionId, JSON.stringify(payload));
+        sendNextRequest();
+      })
+
   }else{
-    console.log("Request confermed but no real email provided...");
-    mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionid ,"No email provided");
+    console.log("Booking request confermed using test email");
+    mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionId, JSON.stringify(payload));
     sendNextRequest();
-  } 
+  }  
 };
+
+

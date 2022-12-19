@@ -31,7 +31,7 @@ The component **<ins>input data</ins>** are both booking request and booking rep
   "date": "2020-12-14",
   "time": "9:30-10:00",
   "name": "Peter",
-  "sessionid":"5355QPITzxL9-tGW1yOUMITYwIYk4Vdz"
+  "sessionId":"5355QPITzxL9-tGW1yOUMITYwIYk4Vdz"
 }
 ```
 
@@ -43,7 +43,8 @@ The component **<ins>input data</ins>** are both booking request and booking rep
   "date": "2020-12-14",
   "time": "9:30-10:00",
   "name": "Peter",
-  "sessionid": "5355QPITzxL9-tGW1yOUMITYwIYk4Vdz"
+  "sessionId": "5355QPITzxL9-tGW1yOUMITYwIYk4Vdz",
+  "dentistid": 1
 }
 ```
 
