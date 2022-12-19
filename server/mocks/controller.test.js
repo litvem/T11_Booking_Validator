@@ -7,7 +7,6 @@
 const topics = require("../topics");
 const {MinPriorityQueue}= require('@datastructures-js/priority-queue'); 
 
-
 test('Testing queue order return obj2 timeStamp with value 1', () => {
     let inssuancePQueue = new MinPriorityQueue((bookingRequest) => bookingRequest.issuance); 
 
