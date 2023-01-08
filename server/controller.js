@@ -3,6 +3,7 @@ const mqtt = require("./mqtt");
 const topics = require("./topics");
 const { MinPriorityQueue }= require('@datastructures-js/priority-queue');
 const { sendEmail } = require('./emailConfirmation');
+const cbStatus = "Circuit Breaker: ";
 
 /**
  * The MAX_SIZE, THRESHOLD_MAXS_SIZE and bookingRequestOption are set up 
@@ -83,10 +84,15 @@ function onClose(){
  * If a request is received while the open state is active,
  * the fallback send a message to the browser and resends 
  */
+
 circuits.bookingRequestBreaker.fallback((payload) => { 
   console.log(fallbackMessage + ". Sending response to " + payload.name + " with sessionId " +  payload.sessionId)
   mqtt.publishQoS2(topics.publishTopic.bookingError + payload.sessionId, JSON.stringify(fallbackMessage))
-});
+
+  //The event listener is not beign trigered on the open state requirering us to publish the open topic in the fallback as a backup
+  mqtt.publishQoS1(topics.publishTopic.cbOpen, "")
+ });
+
 
 mqtt.client.on("message", async (topic, message) => {
   const payload = JSON.parse(message);
@@ -102,6 +108,7 @@ mqtt.client.on("message", async (topic, message) => {
         if(circuits.bookingRequestBreaker.listenerCount('halfOpen') == 2){
           circuits.bookingRequestBreaker.removeListener('halfOpen', onHalfOpen)
         }
+
         // To see verify the number of listener in every breaker event uncomment this code
 /*         console.log("listener on open: " + breaker.listenerCount('open'))
         console.log("listener on close: " + breaker.listenerCount('close'))
