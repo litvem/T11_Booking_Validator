@@ -3,7 +3,7 @@ const mqtt = require("mqtt");
 const HOST = "mqtt://localhost";
 const PORT = 1883;
 
-const REQUEST_INTERVAL = 65;
+const REQUEST_INTERVAL = 30;
 
 let closed = true;
 
@@ -14,7 +14,7 @@ const messages = {
     dentistid: 2,
     time: "8:30-9:00",
     userid: "test@test.com",
-    sessionid: "p8i0t1kFtGY0_siP_fj6rhfaq3W07fS5",
+    sessionId: "p8i0t1kFtGY0_siP_fj6rhfaq3W07fS5",
     date: "2023-01-15",
     name: "test",
     issuance: "",
