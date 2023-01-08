@@ -3,12 +3,11 @@ const mqtt = require("./mqtt");
 const topics = require("./topics");
 const { MinPriorityQueue }= require('@datastructures-js/priority-queue');
 const { sendEmail } = require('./emailConfirmation');
-const cbStatus = "Circuit Breaker: ";
 
 /**
  * The MAX_SIZE, THRESHOLD_MAXS_SIZE and bookingRequestOption are set up 
  * with values to make the presentation as easy as possible.
- */
+*/
 const MAX_SIZE = 5;
 const THRESHOLD_MAXS_SIZE = MAX_SIZE * 0.6; // 60% of the load balancer max size
 const fallbackMessage = "Out of Service"
@@ -17,6 +16,7 @@ const emailSendMessage = "Email was sended"
 const emailError = "Email couldn't be delivered";
 const emptyQueueMessage = "Queue is empty"
 const nextRequestMessage = "Sending next request"
+const cbStatus = "Circuit Breaker: ";
 var state;
 var waitingForConfirmation = false;
 
