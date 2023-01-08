@@ -1,14 +1,14 @@
 # **T11 - Booking Validator**
 
-## **Descripton**
-Booking Validator is one of the component of the Dentistimo system. Dentistimo allows users to view and book dentist appointment in the city of Gothenburg. More information is found [here](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-project).
+## **Description**
+Booking Validator is one of the components of the Dentistimo system. Dentistimo allows users to view and book dentist appointments in the city of Gothenburg. More information is found [here](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-project).
 
-This components is triggered by incomming booking request send from users using the [GUI component](). The Booking validator works as a load balancer for the booking request process while ensuring that no unintentional duplicate appointments are stored and reduce the recurring failres. The booking request are forward to the [DB Model Handler component](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-database-model-handler). When a response is received from the DB Model handler the next booking is send and depending of the response an email confimation is send to the respective user. 
+This component is triggered by incoming booking requests sent from users using the [GUI component](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-web-application). The Booking validator works as a load balancer for the booking request process while ensuring that no unintentional duplicate appointments are stored and reduces the recurring failures. The booking requests are forwarded to the [DB Model Handler component](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-database-model-handler). When a response is received from the DB Model handler, the next booking is sent. Depending on the response, an email confirmation is sent to the respective user. 
 
-### **<ins>Responsability</ins>**
+### **<ins>Responsibility</ins>**
 
-- Forward valid booking request prioritized by inssuance to the DB Model Handler
-- Send an email confimation to the user
+- Forward valid booking requests prioritized by issuance to the DB Model Handler
+- Send an email confirmation to the user
 - Balance the booking request load in the system
 - Reduce recurring failures 
 
@@ -19,7 +19,7 @@ More theoretical information about the circuit breaker pattern is found [here](h
 
 ## **Data flow**
 
-The component **<ins>input data</ins>** are both booking request and booking reponse. The booking request are also the **<ins>output data</ins>** of this components since it forwards them to the DB Model Handler.
+Both the booking requests and the booking responses are the **<ins>input data</ins>** of the component. The booking requests are also the **<ins>output data</ins>** of this component, since the component forwards the booking requests to the DB Model Handler.
 
 >Example Booking Request
 ```
@@ -58,7 +58,7 @@ The component **<ins>input data</ins>** are both booking request and booking rep
 
 
 For MacOS:
-> HomeBreq<br> [Download](https://brew.sh/index_sv)
+> HomeBrew<br> [Download](https://brew.sh/index_sv)
 
 ### Libraries
 * [ NPM ](https://www.npmjs.com/)
@@ -92,4 +92,4 @@ netstat -ano | findstr "1883"
 ```
 taskkill /F /PID XXXX
 ``` 
->5. Restart Moquitto
+>5. Restart Mosquitto
