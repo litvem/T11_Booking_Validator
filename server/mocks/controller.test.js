@@ -48,7 +48,7 @@ test('Testing queue order return obj2 timeStamp with value 1', () => {
 function mockSwitch(topic){
     switch (true) {
         case topic.includes(topics.subsscribeTopic.bookingRequest):
-             return "Booking request received.";
+            return "Booking request received.";
             break;
         case topic.includes(topics.subsscribeTopic.bookingConfirmation.slice(0,-1)):
             return "Booking confirmation received. Sending email...";
