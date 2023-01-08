@@ -3,24 +3,25 @@ const mqtt = require("./mqtt");
 const topics = require("./topics");
 const { MinPriorityQueue }= require('@datastructures-js/priority-queue');
 const { sendEmail } = require('./emailConfirmation');
-//To increase the number of default (10) listener for Node uncomment this and give it a number
-//require('events').EventEmitter.defaultMaxListeners = <number of listeners wanted>;
 
 /**
  * The MAX_SIZE, THRESHOLD_MAXS_SIZE and bookingRequestOption are set up 
  * with values to make the presentation as easy as possible.
  */
 const MAX_SIZE = 5;
-const THRESHOLD_MAXS_SIZE = 3; 
+const THRESHOLD_MAXS_SIZE = MAX_SIZE * 0.6; // 60% of the load balancer max size
 const fallbackMessage = "Out of Service"
-const overload = "The Booking queue is overloaded"
+const confirmationResponse = "Request confermed but No email Provided..."
+const emailSendMessage = "Email was sended"
+const emailError = "Email couldn't be delivered";
+const emptyQueueMessage = "Queue is empty"
+const nextRequestMessage = "Sending next request"
 var state;
 var waitingForConfirmation = false;
 
 mqtt.connect();
 
 let issuancePQueue = new MinPriorityQueue((bookingRequest) => bookingRequest.timeStamp);
-exports.issuancePQueue= issuancePQueue;
 
 const bookingRequestOption = {
   timeout: 5000, // If our function takes longer than 5 seconds, trigger a failure
@@ -31,7 +32,6 @@ const bookingRequestOption = {
 async function receiveBookingRequest (payload){
     return new Promise((resolve, reject) => {
       if (issuancePQueue.size() >= MAX_SIZE){
-        mqtt.publishQoS2(topics.publishTopic.bookingError + JSON.stringify(message.sessionid), JSON.stringify(overload))
         reject();
       }else{
         issuancePQueue.enqueue(payload);
@@ -49,11 +49,8 @@ const circuits = Object.freeze({
 function onOpen (){
   if(state != "open"){
     state = "open" 
-    console.log("Circuit breaker status: Open")
-  /* Publishes the open state of the breaker using QoS 1 */
-  mqtt.publishQoS1(topics.publishTopic.cbOpen, "Bookings are not available at the moment")
-  /* Unsubscribes from the booking request topic to give the component time to process the queued bookings  */
-  mqtt.unsubscribe(topics.subsscribeTopic.bookingRequest);
+    console.log( cbStatus + "Open")
+    mqtt.publishQoS1(topics.publishTopic.cbOpen, "Bookings are not available at the moment")
   }
 };
 
@@ -65,14 +62,13 @@ function onOpen (){
  * capicity is above the threshold capacity the circuit breaker reenters the open state again.
  */
 function onHalfOpen() {
-  console.log("Circuit breaker status: Half-Open")
+  console.log(cbStatus + "Half-Open")
   if(issuancePQueue.size() <= THRESHOLD_MAXS_SIZE){
     circuits.bookingRequestBreaker.close();
-    mqtt.publishQoS1(topics.publishTopic.cbClose, "Bookings are available");
-    console.log("Circuit breaker status: Close")
+    onClose();
   }else{
     circuits.bookingRequestBreaker.open();
-    console.log("Circuit breaker status: Open")
+    console.log(cbStatus + "Reentering Open State")
   }
 };
 
@@ -80,29 +76,22 @@ function onClose(){
   if(state != "close"){
     state = "close"
     mqtt.publishQoS1(topics.publishTopic.cbClose, "Bookings are available");
-    console.log("Circuit breaker status: closed")
+    console.log( cbStatus + "Closed")
   }
 };
 /**
- * If a request triggers the fallback, the components 
- * publishes that the circuit breaker is open. 
+ * If a request is received while the open state is active,
+ * the fallback send a message to the browser and resends 
  */
-function fallback(){
-  circuits.bookingRequestBreaker.fallback(() => { 
-    console.log("Fallback: " + fallbackMessage)
-    mqtt.publishQoS1(topics.publishTopic.cbOpen, "Bookings are not available at the moment");
-  });
-};
-
+circuits.bookingRequestBreaker.fallback((payload) => { 
+  console.log(fallbackMessage + ". Sending response to " + payload.name + " with sessionId " +  payload.sessionId)
+  mqtt.publishQoS2(topics.publishTopic.bookingError + payload.sessionId, JSON.stringify(fallbackMessage))
+});
 
 mqtt.client.on("message", async (topic, message) => {
   const payload = JSON.parse(message);
   switch (true) {
     case topic.includes(topics.subsscribeTopic.bookingRequest):
-      if(circuits.bookingRequestBreaker.close){
-        console.log("BREAKER CLOSE")
-      }
-      fallback();
       circuits.bookingRequestBreaker.on('open',onOpen)
       circuits.bookingRequestBreaker.on("halfOpen", onHalfOpen);
       circuits.bookingRequestBreaker.on('close',onClose)
@@ -113,7 +102,7 @@ mqtt.client.on("message", async (topic, message) => {
         if(circuits.bookingRequestBreaker.listenerCount('halfOpen') == 2){
           circuits.bookingRequestBreaker.removeListener('halfOpen', onHalfOpen)
         }
-        // To see the number of listener in every breaker event uncomment this code
+        // To see verify the number of listener in every breaker event uncomment this code
 /*         console.log("listener on open: " + breaker.listenerCount('open'))
         console.log("listener on close: " + breaker.listenerCount('close'))
         console.log("listener on halfOpen: " + breaker.listenerCount('halfOpen')) */
@@ -136,33 +125,32 @@ function sendNextRequest (){
   if(issuancePQueue.size() > 0) {
     const nextRequest = JSON.stringify(issuancePQueue.dequeue());
     mqtt.publishQoS2(topics.publishTopic.saveBooking, nextRequest);
-    console.log("Sending next booking Request")
+    console.log(nextRequestMessage)
     console.log("Queue sizes : " + issuancePQueue.size())
     waitingForConfirmation = true;
   }else{
     waitingForConfirmation = false;
-    console.log("Queue is empty")
+    console.log(emptyQueueMessage)
     console.log("Queue sizes : " + issuancePQueue.size())
   }
 };
 
 async function receiveConfimation (payload){
   if(!JSON.stringify(payload.userid).includes("@test")){
-
-      await sendEmail(payload).then(()=> {
-        console.log("Email was send")
-        mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionId , JSON.stringify(payload));
-        sendNextRequest();
-      }).catch((err)=>{
-        console.log(err);
-        console.log("Email couldn't be delivered")
-        mqtt.publishQoS2(topics.publishTopic.emailError + payload.sessionId, JSON.stringify(payload));
-        sendNextRequest();
-      })
+    await sendEmail(payload).then(()=> {
+      console.log(emailSendMessage)
+      mqtt.publishQoS1(topics.publishTopic.emailConfirmation + payload.sessionId , JSON.stringify(payload));
+      sendNextRequest();
+    }).catch((err)=>{
+      console.log(err);
+      console.log(emailError)
+      mqtt.publishQoS1(topics.publishTopic.emailError + payload.sessionId, JSON.stringify(payload));
+      sendNextRequest();
+    })
 
   }else{
-    console.log("Booking request confermed using test email");
-    mqtt.publishQoS2(topics.publishTopic.emailConfirmation + payload.sessionId, JSON.stringify(payload));
+    console.log(confirmationResponse);
+    mqtt.publishQoS1(topics.publishTopic.emailConfirmation + payload.sessionId, JSON.stringify(payload));
     sendNextRequest();
   }  
 };

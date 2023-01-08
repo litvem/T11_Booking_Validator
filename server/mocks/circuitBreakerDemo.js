@@ -3,7 +3,7 @@ const mqtt = require("mqtt");
 const HOST = "mqtt://localhost";
 const PORT = 1883;
 
-const REQUEST_INTERVAL = 250;
+const REQUEST_INTERVAL = 65;
 
 let closed = true;
 

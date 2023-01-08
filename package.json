@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest  --coverage",
     "testMail": "nodemon ./server/mocks/manualEmailTest.js",
-    "controller": "nodemon ./server/controller.js",
+    "start": "nodemon ./server/controller.js",
     "cbDemo": "nodemon ./server/mocks/circuitBreakerDemo.js"
   },
   "repository": {
