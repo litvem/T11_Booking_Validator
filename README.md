@@ -89,6 +89,7 @@ To run this test make sure to have the Booking validator and the [DB Model Handl
 
 
 > * Stress test 
+
 This is a stress test to see how long the booking request process takes in a millisecond when the system is being loaded with a request every 200 milliseconds, i.e., 5 requests per second. The number of requests per second can be modified in the method test. 
 
 To run this test the Booking Validator and the [DB Model Handler](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-database-model-handler) are required.
