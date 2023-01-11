@@ -7,8 +7,11 @@ const { sendEmail } = require('./emailConfirmation');
 /**
  * The MAX_SIZE, THRESHOLD_MAXS_SIZE and bookingRequestOption are set up 
  * with values to make the presentation as easy as possible.
+ * The saving process of the booking request takes around 30 miliseconds
+ * while sending 5 requests per second. This value can vary in different computer.
+ * Perfom the stressTest to get a clear value for the computer in used. 
 */
-const MAX_SIZE = 5;
+const MAX_SIZE = 5; 
 const THRESHOLD_MAXS_SIZE = MAX_SIZE * 0.6; // 60% of the load balancer max size
 const fallbackMessage = "Out of Service"
 const confirmationResponse = "Request confermed but No email Provided..."
@@ -24,6 +27,12 @@ mqtt.connect();
 
 let issuancePQueue = new MinPriorityQueue((bookingRequest) => bookingRequest.timeStamp);
 
+/*
+  The errorThresholdPercentage is set to 1 % just in case, since the circuit breaker has
+  being modified, see comment in the onHalfOpen function below.
+  The resetTimeout is only set to 4 seconds since the system clears the issuancePQueue 
+  in less than one second. 
+*/
 const bookingRequestOption = {
   timeout: 5000, // If our function takes longer than 5 seconds, trigger a failure
   errorThresholdPercentage: 1, // When 1% of requests fail, trigger the circuit breaker. 
@@ -82,13 +91,12 @@ function onClose(){
 };
 /**
  * If a request is received while the open state is active,
- * the fallback send a message to the browser and resends 
+ * the fallback send a message to the browser and resends breaker open topic to the broker
  */
 
 circuits.bookingRequestBreaker.fallback((payload) => { 
   console.log(fallbackMessage + ". Sending response to " + payload.name + " with sessionId " +  payload.sessionId)
   mqtt.publishQoS2(topics.publishTopic.bookingError + payload.sessionId, JSON.stringify(fallbackMessage))
-
   //The event listener is not beign trigered on the open state requirering us to publish the open topic in the fallback as a backup
   mqtt.publishQoS1(topics.publishTopic.cbOpen, "")
  });
@@ -141,7 +149,10 @@ function sendNextRequest (){
     console.log("Queue sizes : " + issuancePQueue.size())
   }
 };
-
+/*
+  To create the option of testing the system without the used of a real email adress
+  and span the email server, the use of "@test" help to skip the email confirmation functionality.
+*/
 async function receiveConfimation (payload){
   if(!JSON.stringify(payload.userid).includes("@test")){
     await sendEmail(payload).then(()=> {
