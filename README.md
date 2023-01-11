@@ -13,8 +13,8 @@ This component is triggered by incoming booking requests sent from users using t
 - Reduce recurring failures 
 
 ### **<ins>Fault Tolerance and overload</ins>**
-The component implements a min heap priority queue for the booking request, decreasing the overload of the system, combined with a circuit breaker, which is triggered when the queue is at maximum capacity.
-When there is a high load in the components and the failure rate is at 1%, the circuit breaker enters an open state for 4 seconds. The circuit breaker half-open state has been modified in this component. Instead of verifying that the next request is successful, the half-open state checks if the min heap priority queue is at the specified threshold capacity level. If the queue size is above the specified threshold capacity, the breaker enters the open state again, and if the queue size is under the specified threshold capacity, the breaker enters the closed state instead.
+The component implements a load balancer in the form of a min heap priority queue for the booking request, decreasing the overload of the system, combined with a circuit breaker, which is triggered when the queue is at maximum capacity.
+When there is a high load in the components and load balancer is at maximun capacity, the circuit breaker enters an open state for 4 seconds. The circuit breaker half-open state has been modified in this component. Instead of verifying that the next request is successful, the half-open state checks if the min heap priority queue is at the specified threshold capacity level, setup at 60%. If the queue size is above the specified threshold capacity, the breaker enters the open state again, and if the queue size is less or equal to the specified threshold capacity, the breaker enters the closed state instead.
 More theoretical information about the circuit breaker pattern is found [here](https://martinfowler.com/bliki/CircuitBreaker.html).
 
 ## **Data flow**
