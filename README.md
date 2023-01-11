@@ -80,6 +80,20 @@ For MacOS:
 |To run the component |  `npm run start`|
 <br>
 
+## **Test instructions**
+> * Fault tolerance
+
+The purpose of the test is to show the different states of the circuit breaker and provides information about the time, in seconds, it takes for the circuit breaker to be triggered depending on the request sent every X milliseconds. The variable X depends on the value given to `REQUEST_INTERVAL`. The variable is set up to send a request every 30 milliseconds.
+
+To run this test make sure to have the Booking validator and the [DB Model Handler](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-database-model-handler) running. To see the reaction in the browser, the whole system is require. Follow the instruction in  [Documentation repo](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-project)
+
+
+> * Stress test 
+This is a stress test to see how long the booking request process takes in a millisecond when the system is being loaded with a request every 200 milliseconds, i.e., 5 requests per second. The number of requests per second can be modified in the method test. 
+
+To run this test the Booking Validator and the [DB Model Handler](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-database-model-handler) are required.
+
+
 ## **Common errors**
 > ### <ins> Mosquitto port already in use</ins>
 >1. Open terminal as administrator
