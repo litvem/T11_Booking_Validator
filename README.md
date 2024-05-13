@@ -85,14 +85,14 @@ For MacOS:
 
 The purpose of the test is to show the different states of the circuit breaker and provides information about the time, in seconds, it takes for the circuit breaker to be triggered depending on the request sent every X milliseconds. The variable X depends on the value given to `REQUEST_INTERVAL`. The variable is set up to send a request every 30 milliseconds.
 
-To run this test make sure to have the Booking validator and the [DB Model Handler](https://github.com/litvem/T11_Database_Model_Handler) running. To see the reaction in the browser, the whole system is require. Follow the instruction in  [Documentation repo](https://github.com/litvem/T11_Project_Documentation)
+To run this test make sure to have the Booking validator and the [DB Model Handler](https://github.com/litvem/T11_Database_Model_Handler) running. To see the reaction in the browser, the whole system is require. Follow the instruction in  [Documentation repo](https://github.com/litvem/T11_Project_Documentation).
 
 
 > * Stress test 
 
 This is a stress test to see how long the booking request process takes in a millisecond when the system is being loaded with a request every 200 milliseconds, i.e., 5 requests per second. The number of requests per second can be modified in the method test. 
 
-To run this test the Booking Validator and the [DB Model Handler](https://github.com/litvem/T11_Database_Model_Handler) are required.
+To run this test the [Booking Validator](https://github.com/litvem/T11_Booking_Validator) and the [DB Model Handler](https://github.com/litvem/T11_Database_Model_Handler) are required.
 
 
 ## **Common errors**
